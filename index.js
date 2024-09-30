@@ -2,6 +2,7 @@
 require("dotenv").config();
 //importing modules
 const express = require("express");
+const cors = require("cors");
 const validUrl = require("valid-url");
 const shortId = require("shortid");
 const mongoose = require("mongoose");
@@ -56,6 +57,10 @@ const port = process.env.PORT;
 app.listen(port, () => console.log(`The Application is listen on port ${port}`));
 
 //Some express configurations
+app.use(cors({
+    optionsSuccessStatus: 200 
+  }));
+
 app.use(express.urlencoded({extended: false}));
 app.use(express.json()); 
 
@@ -65,6 +70,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/shorturl", async (req, res) => {
+//app.post("/", async (req, res) => {
     console.log(`url: ${req.url}\nBody: ${JSON.stringify(req.body)}`);
 
     const originalUrl = checkUrlValid(req.body.url);
@@ -99,7 +105,7 @@ app.post("/api/shorturl", async (req, res) => {
     //res.send({urlData});
 }); //end of the post method to save shorten url
 
-app.get("/api/shorturl/:short_url?", async (req, res) => {
+app.get("/api/shorturl/:short_url", async (req, res) => {
     const shortUrl = req.params.short_url;
 
     //check if the shortUrl does exist in the DB
